@@ -1,6 +1,8 @@
 var planilha = SpreadsheetApp.getActiveSpreadsheet(); // Acessa a planilha
 var cadastro = planilha.getSheetByName("Cadastro"); // Acessa a aba "Cadastro"
-var movOcultas = planilha.getSheetByName("Movimentações ocultas"); // Acessa a aba "Movimentações ocultas"
+var auxiliar = planilha.getSheetByName("Auxiliar"); // Acessa a aba "Auxiliar"
+var movimentacoes = planilha.getSheetByName("Movimentações"); // Acessa a aba "Movimentações"
+var gerador = planilha.getSheetByName("Gerador de relatórios"); // Acessa a aba "Gerador de relatórios"
 var relatorio = planilha.getSheetByName("Relatório"); // Acessa a aba "Relatório"
 
 var data = cadastro.getRange("C3:G3").getValue(); // Armazena o valor do campo "data"
@@ -9,33 +11,37 @@ var categoria = cadastro.getRange("F5:G5").getValue(); // Armazena o valor do ca
 var descricao = cadastro.getRange("C7:G7").getValue(); // Armazena o valor do campo "descrição"
 var valor = cadastro.getRange("C9:G9").getValue(); // Armazena o valor do campo "valor"
 
-////////////////////////////////////////////
-// CADASTRAR AS MOVIMENTAÇÕES FINANCEIRAS //
-////////////////////////////////////////////
+
+// CADASTRA AS MOVIMENTAÇÕES FINANCEIRAS 
 
 function cadastrar() {
 
-  var ultimaLinha = movOcultas.getLastRow()+1; // Adiciona uma linha na aba "Movimentações ocultas" e seleciona a linha adicionada
+  var ultimaLinha = auxiliar.getLastRow()+1; // Seleciona a linha que fica logo após a última linha da aba "Auxiliar"
 
-  var dataSeparada = categoria.split(" ");
+  auxiliar.getRange(ultimaLinha,1).setValue(data);
+  auxiliar.getRange(ultimaLinha,2).setFormula('=SPLIT(A'+ultimaLinha+';"/")');
+  auxiliar.getRange(ultimaLinha,5).setValue(tipo);
+  auxiliar.getRange(ultimaLinha,6).setValue(categoria);
+  auxiliar.getRange(ultimaLinha,7).setValue(descricao);
 
-  Logger.log(""+data+"");
+  if (tipo == "Entrada") {
+    auxiliar.getRange(ultimaLinha,8).setValue(valor);
+  } else {
+    auxiliar.getRange(ultimaLinha,8).setValue(-valor);
+  }
 
-  /* movOcultas.getRange(ultimaLinha,1).setValue(dataSeparada[0]);
-  movOcultas.getRange(ultimaLinha,1).setValue(dataSeparada[1]);
-  movOcultas.getRange(ultimaLinha,1).setValue(dataSeparada[2]);
-  movOcultas.getRange(ultimaLinha,4).setValue(tipo);
-  movOcultas.getRange(ultimaLinha,5).setValue(categoria);
-  movOcultas.getRange(ultimaLinha,6).setValue(descricao);
-  movOcultas.getRange(ultimaLinha,7).setValue(valor); */
+  if (ultimaLinha != 2) {
+    movimentacoes.getRange(ultimaLinha,9).setFormula("I"+(ultimaLinha-1)+"+H"+ultimaLinha+"");
+  } else {
+    movimentacoes.getRange(ultimaLinha,9).setFormula("H2");
+  }
   
-  // limparCampos();
+  limparCampos();
 
 }
 
-////////////////////////////////////////
-// LIMPAR OS CAMPOS DA ABA "Cadastro" //
-////////////////////////////////////////
+
+// LIMPA OS CAMPOS DA ABA "Cadastro" 
 
 function limparCampos() {
 
@@ -47,25 +53,56 @@ function limparCampos() {
 
 }
 
-////////////////////////////
-// VISUALIZAR O RELATÓRIO //
-////////////////////////////
 
-function ver() {
+// GERA O RELATÓRIO
 
+function gerar() {
+
+  relatorio.getRange("F2:F").clearContent();
+  relatorio.getRange("F2").setFormula("E2");
+
+  for (var i = 3; i <= relatorio.getLastRow(); i++) {
+
+    relatorio.getRange(i,6).setFormula('IF(F'+(i-1)+'+E'+i+'<>0; F'+(i-1)+'+E'+i+'; "")');
+
+  }
+
+  SpreadsheetApp.getUi().alert("Relatório gerado com sucesso!", 'Após visualizá-lo, retorne para a aba "Gerador de relatórios" para que possa enviá-lo por e-mail para seus destinatários.', SpreadsheetApp.getUi().ButtonSet.OK);
   SpreadsheetApp.setActiveSheet(relatorio);
 
 }
 
-//////////////////////////////////////////////////
-// ENVIAR O RELATÓRIO NO FORMATO PDF VIA E-MAIL //
-//////////////////////////////////////////////////
+
+// ENVIA O RELATÓRIO POR E-MAIL (NO FORMATO PDF)
 
 function enviar() {
 
-  SpreadsheetApp.getUi().prompt(
-    "Você está prestes a compartilhar este relatório",
-    "Digite o e-mail do destinatário:", 
-    SpreadsheetApp.getUi().ButtonSet.OK_CANCEL);
+  var destinatario = gerador.getRange("J4:J5").getValue();
+  var mensagem = gerador.getRange("H4:H6").getValue();
+
+  var email = {
+    to: destinatario,
+    subject: "Relatório Financeiro",
+    body: mensagem,
+    name: "Thullyo Damasceno",
+    attachments: [planilha.getAs(MimeType.PDF).setName("Relatório Financeiro"+".pdf")]
+  }
+
+  if(Browser.msgBox("Deseja compartilhar o relatório financeiro com "+destinatario+"?", Browser.Buttons.YES_NO) == 'yes') {
+
+    cadastro.hideSheet();
+    auxiliar.hideSheet();
+    movimentacoes.hideSheet();
+    gerador.hideSheet();
+    relatorio.dele
+
+    MailApp.sendEmail(email);
+
+    cadastro.showSheet();
+    auxiliar.showSheet();
+    movimentacoes.showSheet();
+    gerador.showSheet();
+
+  }
 
 }
