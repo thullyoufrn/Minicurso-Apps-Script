@@ -91,7 +91,6 @@ function enviar() {
   if(Browser.msgBox("Deseja compartilhar o relatório financeiro com "+destinatario+"?", Browser.Buttons.YES_NO) == 'yes') {
 
     cadastro.hideSheet();
-    auxiliar.hideSheet();
     movimentacoes.hideSheet();
     gerador.hideSheet();
     relatorio.dele
@@ -99,7 +98,6 @@ function enviar() {
     MailApp.sendEmail(email);
 
     cadastro.showSheet();
-    auxiliar.showSheet();
     movimentacoes.showSheet();
     gerador.showSheet();
 
