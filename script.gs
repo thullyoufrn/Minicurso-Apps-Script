@@ -1,4 +1,5 @@
 var planilha = SpreadsheetApp.getActiveSpreadsheet(); // Acessa a planilha
+
 var cadastro = planilha.getSheetByName("Cadastro"); // Acessa a aba "Cadastro"
 var auxiliar = planilha.getSheetByName("Auxiliar"); // Acessa a aba "Auxiliar"
 var movimentacoes = planilha.getSheetByName("Movimentações"); // Acessa a aba "Movimentações"
@@ -63,37 +64,36 @@ function gerar() {
 
   for (var i = 3; i <= relatorio.getLastRow(); i++) {
 
-    relatorio.getRange(i,6).setFormula('IF(F'+(i-1)+'+E'+i+'<>0; F'+(i-1)+'+E'+i+'; "")');
+    relatorio.getRange(i,6).setFormula("F"+(i-1)+"+E"+i+"");
 
   }
 
-  SpreadsheetApp.getUi().alert("Relatório gerado com sucesso!", 'Após visualizá-lo, retorne para a aba "Gerador de relatórios" para que possa enviá-lo por e-mail para seus destinatários.', SpreadsheetApp.getUi().ButtonSet.OK);
   SpreadsheetApp.setActiveSheet(relatorio);
+  SpreadsheetApp.getUi().alert("Relatório gerado com sucesso!", 'Após visualizá-lo, retorne para aba "Gerador de relatórios" para que possa enviá-lo por e-mail para seus destinatários.', SpreadsheetApp.getUi().ButtonSet.OK);
 
 }
 
 
 // ENVIA O RELATÓRIO POR E-MAIL (NO FORMATO PDF)
 
+var destinatario = gerador.getRange("K4:K5").getValue();
+var mensagem = gerador.getRange("I4:I6").getValue();
+
+var email = {
+  to: destinatario,
+  subject: "Relatório Financeiro",
+  body: mensagem,
+  name: "Thullyo Damasceno",
+  attachments: [planilha.getAs(MimeType.PDF).setName("Relatório Financeiro"+".pdf")]
+}
+
 function enviar() {
 
-  var destinatario = gerador.getRange("J4:J5").getValue();
-  var mensagem = gerador.getRange("H4:H6").getValue();
-
-  var email = {
-    to: destinatario,
-    subject: "Relatório Financeiro",
-    body: mensagem,
-    name: "Thullyo Damasceno",
-    attachments: [planilha.getAs(MimeType.PDF).setName("Relatório Financeiro"+".pdf")]
-  }
-
-  if(Browser.msgBox("Deseja compartilhar o relatório financeiro com "+destinatario+"?", Browser.Buttons.YES_NO) == 'yes') {
+  if(Browser.msgBox('Compartilhar "Relatório"','Deseja compartilhar o relatório financeiro com "'+destinatario+'"?', Browser.Buttons.YES_NO) == 'yes') {
 
     cadastro.hideSheet();
     movimentacoes.hideSheet();
     gerador.hideSheet();
-    relatorio.dele
 
     MailApp.sendEmail(email);
 
