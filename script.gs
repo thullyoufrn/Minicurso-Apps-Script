@@ -19,16 +19,16 @@ function cadastrar() {
 
   var ultimaLinha = auxiliar.getLastRow()+1; // Seleciona a linha que fica logo após a última linha da aba "Auxiliar"
 
-  auxiliar.getRange(ultimaLinha,1).setValue(data);
-  auxiliar.getRange(ultimaLinha,2).setFormula('=SPLIT(A'+ultimaLinha+';"/")');
-  auxiliar.getRange(ultimaLinha,5).setValue(tipo);
-  auxiliar.getRange(ultimaLinha,6).setValue(categoria);
-  auxiliar.getRange(ultimaLinha,7).setValue(descricao);
+  auxiliar.getRange(ultimaLinha,1).setValue(data); // Atribui o valor da variável "data" para a célula especificada
+  auxiliar.getRange(ultimaLinha,2).setFormula('=SPLIT(A'+ultimaLinha+';"/")'); // Atribui a função "SPLIT" para a célula especificada
+  auxiliar.getRange(ultimaLinha,5).setValue(tipo); // Atribui o valor da variável "tipo" para a célula especificada
+  auxiliar.getRange(ultimaLinha,6).setValue(categoria); // Atribui o valor da variável "categoria" para a célula especificada
+  auxiliar.getRange(ultimaLinha,7).setValue(descricao); // Atribui o valor da variável "descricao" para a célula especificada
 
   if (tipo == "Entrada") {
-    auxiliar.getRange(ultimaLinha,8).setValue(valor);
+    auxiliar.getRange(ultimaLinha,8).setValue(valor); // Atribui o valor da variável "valor" para a célula especificada
   } else {
-    auxiliar.getRange(ultimaLinha,8).setValue(-valor);
+    auxiliar.getRange(ultimaLinha,8).setValue(-valor); // Atribui o valor negativo da variável "valor" para a célula especificada
   }
 
   if (ultimaLinha != 2) {
