@@ -2,8 +2,8 @@
 
 Este repositório tem como objetivo servir de material de apoio para o [minicurso de Introdução ao Apps Script](https://www.youtube.com/c/ufrnpetee) que está disponível no [canal do PET de Engenharia Elétrica da UFRN](https://www.youtube.com/c/ufrnpetee) no YouTube.
 
-## Projeto
-### Controle Financeiro
+## Construção do projeto
+### Planilha de Controle Financeiro
 
 O projeto consiste em desenvolver uma planilha na qual o usuário poderá: cadastrar movimentações financeiras, gerar relatórios e enviá-los por e-mail no formato PDF.
 
