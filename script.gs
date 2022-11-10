@@ -68,38 +68,40 @@ function gerar() {
 
   }
 
-  SpreadsheetApp.setActiveSheet(relatorio);
-  SpreadsheetApp.getUi().alert("Relatório gerado com sucesso!", 'Após visualizá-lo, retorne para aba "Gerador de relatórios" para que possa enviá-lo por e-mail para seus destinatários.', SpreadsheetApp.getUi().ButtonSet.OK);
+  SpreadsheetApp.setActiveSheet(relatorio); // Direciona o usuário para aba "Relatório"
+
+  // Abre uma janelinha avisando que o relatório foi gerado
+  SpreadsheetApp.getUi().alert("Relatório gerado com sucesso!", 'Após visualizá-lo, retorne para aba "Gerador de relatórios" para que possa enviá-lo por e-mail para seus destinatários.', SpreadsheetApp.getUi().ButtonSet.OK); 
 
 }
-
 
 // ENVIA O RELATÓRIO POR E-MAIL (NO FORMATO PDF)
 
-var destinatario = gerador.getRange("K4:K5").getValue();
-var mensagem = gerador.getRange("I4:I6").getValue();
-
-var email = {
-  to: destinatario,
-  subject: "Relatório Financeiro",
-  body: mensagem,
-  name: "Thullyo Damasceno",
-  attachments: [planilha.getAs(MimeType.PDF).setName("Relatório Financeiro"+".pdf")]
-}
-
 function enviar() {
 
+  var destinatario = gerador.getRange("K4:K5").getValue(); // Armazena o conteúdo do campo "E-mail"
+  var mensagem = gerador.getRange("I4:I6").getValue(); // Armazena o conteúdo do campo "Mensagem"
+
+  var email = { // Armazena as informações que o método "MailApp.sendEmail()" solicita como argumento
+    to: destinatario,
+    subject: "Relatório Financeiro",
+    body: mensagem,
+    name: "Thullyo Damasceno",
+    attachments: [planilha.getAs(MimeType.PDF).setName("Relatório Financeiro"+".pdf")]
+  }
+
+  // Pergunta se o usuário deseja compartilhar o relatório
   if(Browser.msgBox('Compartilhar "Relatório"','Deseja compartilhar o relatório financeiro com "'+destinatario+'"?', Browser.Buttons.YES_NO) == 'yes') {
 
-    cadastro.hideSheet();
-    movimentacoes.hideSheet();
-    gerador.hideSheet();
+    cadastro.hideSheet(); // Oculta a aba "Cadastro"
+    movimentacoes.hideSheet(); // Oculta a aba "Movimentações"
+    gerador.hideSheet(); // Oculta a aba "Gerador de relatórios"
 
-    MailApp.sendEmail(email);
+    MailApp.sendEmail(email); // Envia o e-mail
 
-    cadastro.showSheet();
-    movimentacoes.showSheet();
-    gerador.showSheet();
+    cadastro.showSheet(); // Mostra a aba "Cadastro"
+    movimentacoes.showSheet();// Mostra a aba "Movimentações"
+    gerador.showSheet();// Mostra a aba "Gerador de relatórios"
 
   }
 
