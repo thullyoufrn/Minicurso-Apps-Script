@@ -1,5 +1,8 @@
 # Introdução ao Apps Script
 
+![image](https://user-images.githubusercontent.com/77694067/227219963-f2645aa6-c111-466c-85c4-7284bfb86ab8.png)
+
+
 Este repositório tem como objetivo servir de material de apoio para o [minicurso de Introdução ao Apps Script](https://www.youtube.com/c/ufrnpetee) que está disponível no [canal do PET de Engenharia Elétrica da UFRN](https://www.youtube.com/c/ufrnpetee) no YouTube.
 
 ## Construção do projeto
